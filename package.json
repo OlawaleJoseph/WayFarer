@@ -22,5 +22,11 @@
   "bugs": {
     "url": "https://github.com/OlawaleJoseph/WayFarer/issues"
   },
-  "homepage": "https://github.com/OlawaleJoseph/WayFarer#readme"
+  "homepage": "https://github.com/OlawaleJoseph/WayFarer#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
 }
