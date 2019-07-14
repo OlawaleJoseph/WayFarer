@@ -1,0 +1,26 @@
+{
+  "name": "wayfarer",
+  "version": "1.0.0",
+  "description": "WayFarer is a public bus transportation booking server.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OlawaleJoseph/WayFarer.git"
+  },
+  "keywords": [
+    "Bus",
+    "Transport",
+    "Travel",
+    "Booking",
+    "trip"
+  ],
+  "author": "Adedeko Olawale",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OlawaleJoseph/WayFarer/issues"
+  },
+  "homepage": "https://github.com/OlawaleJoseph/WayFarer#readme"
+}
