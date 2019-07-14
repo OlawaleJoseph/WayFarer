@@ -6,7 +6,7 @@
   "scripts": {
     "devStart": "set DEBUG=http && nodemon --exec babel-node ./server index",
     "lint": "./node_modules/.bin/eslint ./server --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --require @babel/register --require @babel/polyfill ./server/test/*.js"
   },
   "repository": {
     "type": "git",
@@ -38,9 +38,12 @@
     "@babel/plugin-transform-runtime": "^7.5.0",
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.4",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "eslint": "^6.0.1",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.18.0",
+    "mocha": "^6.1.4",
     "nodemon": "^1.19.1"
   }
 }

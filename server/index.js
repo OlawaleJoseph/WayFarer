@@ -14,3 +14,5 @@ const port = 3000;
 app.listen(port, () => {
   debug('http')(`App is listening on PORT ${port}`);
 });
+
+export default app;
