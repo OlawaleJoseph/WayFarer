@@ -26,3 +26,9 @@ export const verifyPassword = async (password, userPassword) => {
     return false;
   }
 };
+export const verifyUser = (token_user, id) => {
+  if (!token_user.isAdmin) {
+    if (token_user.userId !== parseInt(id, 10)) { throw new Error('You are not authorised to perform this operation'); }
+  }
+  return true;
+};
