@@ -155,4 +155,30 @@ describe('trips', () => {
       assert.equal(res.body.status, 'error', 'Response status should be error for non existent trip');
     });
   });
+  describe('Get All Trips', () => {
+    it('Should get all Trips', async () => {
+      const res = await chai.request(app)
+        .get('/api/v1/trips')
+        .set('token', user.token);
+
+      assert.equal(res.status, 200);
+      assert.isArray(res.body.data);
+      res.body.data.forEach((trip) => {
+        assert.equal(trip.status, 'active', 'Users should only see active trips');
+      });
+    });
+
+    it('Should get all trips based on the query search', async () => {
+      await Trip.createTrip(tripObj);
+      await Trip.createTrip(trip2Obj);
+      const res = await chai.request(app)
+        .get('/api/v1/trips/?origin=yaba')
+        .set('token', user.token);
+      assert.equal(res.status, 200);
+      assert.isArray(res.body.data);
+      res.body.data.forEach((trip) => {
+        assert.include(trip, { origin: 'YABA' }, 'It should return the trip(s) that matches the query');
+      });
+    });
+  });
 });
