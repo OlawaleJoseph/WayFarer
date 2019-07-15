@@ -47,7 +47,7 @@ describe('Buses', () => {
       };
       const res = await chai.request(app)
         .post('/api/v1/buses')
-        .set('token', `Bearer ${`Bearer ${admin.token}`}`)
+        .set('token', `Bearer ${admin.token}`)
         .send(busData2);
       assert.equal(res.status, 201, 'Should respond with 201 status code');
       assert.equal(res.body.status, 'success', 'Json response status should be success');
@@ -65,7 +65,7 @@ describe('Buses', () => {
       };
       const res = await chai.request(app)
         .post('/api/v1/buses')
-        .set('token', `Bearer ${`Bearer ${admin.token}`}`)
+        .set('token', `Bearer ${admin.token}`)
         .send(busData);
       assert.equal(res.status, 409, 'Should respond with 409 status code');
       assert.equal(res.body.status, 'error', 'Json response status should be error');
@@ -82,7 +82,7 @@ describe('Buses', () => {
       };
       const res = await chai.request(app)
         .post('/api/v1/buses')
-        .set('token', `Bearer ${`Bearer ${admin.token}`}`)
+        .set('token', `Bearer ${admin.token}`)
         .send(busData3);
       assert.equal(res.status, 400, 'Should respond with 400 status code');
       assert.equal(res.body.status, 'error', 'Json response status should be error');
