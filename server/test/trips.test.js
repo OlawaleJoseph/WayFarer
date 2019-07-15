@@ -159,8 +159,7 @@ describe('trips', () => {
     it('Should get all Trips', async () => {
       const res = await chai.request(app)
         .get('/api/v1/trips')
-        .set('token', user.token);
-
+        .set('token', `Bearer ${user.token}`);
       assert.equal(res.status, 200);
       assert.isArray(res.body.data);
       res.body.data.forEach((trip) => {
@@ -169,11 +168,12 @@ describe('trips', () => {
     });
 
     it('Should get all trips based on the query search', async () => {
-      await Trip.createTrip(tripObj);
-      await Trip.createTrip(trip2Obj);
+      await Trip.create(tripObj);
+      await Trip.create(trip2Obj);
       const res = await chai.request(app)
         .get('/api/v1/trips/?origin=yaba')
-        .set('token', user.token);
+        .set('token', `Bearer ${user.token}`);
+
       assert.equal(res.status, 200);
       assert.isArray(res.body.data);
       res.body.data.forEach((trip) => {

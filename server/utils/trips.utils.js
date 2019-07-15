@@ -37,5 +37,32 @@ class Trips {
       throw new Error(error.message);
     }
   }
+
+  static async getAlltrips() {
+    const alltripsQuery = 'SELECT * FROM trips';
+    try {
+      const trips = await query(alltripsQuery);
+      return trips.map((trip) => {
+        const { trip_completed, status, ...tripObj } = trip;
+        return tripObj;
+      });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static filterTrips(params, data) {
+    let { origin, destination } = params;
+    if (origin && destination) {
+      origin = origin.toUpperCase();
+      destination = destination.toUpperCase();
+      return data.filter(item => item.origin === origin && item.destination === destination);
+    } if (origin) {
+      origin = origin.toUpperCase();
+      return data.filter(item => item.origin === origin);
+    }
+    destination = destination.toUpperCase();
+    return data.filter(item => item.destination === destination);
+  }
 }
 export default Trips;

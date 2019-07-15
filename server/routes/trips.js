@@ -6,6 +6,7 @@ import { validateToken, checkAdmin } from '../middlewares/userVerification';
 const router = express.Router();
 
 router.post('/', [validateTrip, validateToken, checkAdmin], Trip.createTrip);
+router.get('/', [validateToken], Trip.findAllTrips);
 router.get('/:tripId', [validateParam, validateToken], Trip.findATrip);
 
 

@@ -30,5 +30,29 @@ class Trips {
       });
     }
   }
+
+  static async findAllTrips(req, res) {
+    let allTrips;
+    try {
+      const trips = await tripHelperfunction.getAlltrips();
+      if (req.user.isAdmin) {
+        allTrips = trips;
+      } else {
+        allTrips = trips.filter(trip => trip.status === 'active');
+      }
+      if (Object.keys(req.query).length > 0 && allTrips.length > 0) {
+        allTrips = Trips.filterTrips(req.query, allTrips);
+      }
+      return res.status(200).json({
+        status: 'success',
+        data: allTrips,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 'error',
+        message: 'Internal server error',
+      });
+    }
+  }
 }
 export default Trips;
