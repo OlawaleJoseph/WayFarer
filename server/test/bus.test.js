@@ -143,4 +143,26 @@ describe('Buses', () => {
       assert.hasAllKeys(res.body, ['status', 'message'], 'Response body should have status and message keys');
     });
   });
+  describe('Find All buses', () => {
+    it('Should return all Buses', async () => {
+      const res = await chai.request(app)
+        .get('/api/v1/buses')
+        .set('token', `Bearer ${admin.token}`);
+      assert.equal(res.status, 200, 'Should return status code of 200');
+      assert.isArray(res.body.data, 'Should return an array of Buses');
+      res.body.data.forEach((bus) => {
+        assert.isObject(bus, 'Should be a bus object');
+        assert.hasAnyKeys(bus, 'bus_id', 'Each Object should have bus id');
+      });
+    });
+
+    it('Should return an error for invalid token', async () => {
+      const res = await chai.request(app)
+        .get('/api/v1/buses')
+        .set('token', 'token');
+      assert.equal(res.status, 400, 'Should return status code of 400');
+      assert.hasAllKeys(res.body, ['status', 'message'], 'Response body should contain status and message');
+      assert.equal(res.body.status, 'error', 'Status should be error');
+    });
+  });
 });
