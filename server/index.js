@@ -1,6 +1,7 @@
 import express from 'express';
 import debug from 'debug';
 import userRouter from './routes/users';
+import busRouter from './routes/bus';
 
 // initialize app
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.urlencoded({ extended: false }));
 // Routes Middlewares
 
 app.use('/api/v1/auth', userRouter);
+app.use('/api/v1/buses', busRouter);
 
 
 const port = 3000;
