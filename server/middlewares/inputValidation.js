@@ -34,3 +34,20 @@ export const validateSignUp = async (req, res, next) => {
     });
   }
 };
+
+const loginSchema = Joi.object({
+  email,
+  password,
+});
+export const validateLogin = async (req, res, next) => {
+  try {
+    if (!req.body.email) throw new Error('No email Provided');
+    await Joi.validate(req.body, loginSchema);
+    next();
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
+};
