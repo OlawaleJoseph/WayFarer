@@ -181,4 +181,47 @@ describe('trips', () => {
       });
     });
   });
+  describe('Cancel A Trip', async () => {
+    it('Should cancel a trip', async () => {
+      const newTrip = await Trip.create(tripObj);
+      const res = await chai.request(app)
+        .patch(`/api/v1/trips/${newTrip.trip_id}`)
+        .set('token', `Bearer ${admin.token}`);
+      assert.equal(res.status, 200, 'Success status should be 200');
+      assert.equal(res.body.data[0].status, 'cancelled', 'Trip status should be changed from active to cancelled');
+      assert.hasAnyKeys(res.body.data[0], ['trip_id', 'bus_id', 'trip_date'], 'The response object should conatin trip id, date, bus id');
+    });
+
+    it('Should return a 403 for a non admin user', async () => {
+      const newTrip = await Trip.create(tripObj);
+      const res = await chai.request(app)
+        .patch(`/api/v1/trips/${newTrip.trip_id}`)
+        .set('token', `Bearer ${user.token}`);
+
+      assert.equal(res.status, 403, 'Should return 403 status code for non admin users');
+      assert.hasAllKeys(res.body, ['status', 'message'], 'Response should have status and message keys');
+      assert.equal(res.body.status, 'error');
+    });
+
+    it('Should return a 400 for invalid trip id', async () => {
+      await Trip.create(tripObj);
+      const res = await chai.request(app)
+        .patch('/api/v1/trips/l')
+        .set('token', `Bearer ${admin.token}`);
+
+      assert.equal(res.status, 400, 'Should return 400 for invalid trip id');
+      assert.hasAllKeys(res.body, ['status', 'message'], 'Response should have status and message keys');
+      assert.equal(res.body.status, 'error');
+    });
+
+    it('Should return a 404 for non existent trip', async () => {
+      const res = await chai.request(app)
+        .patch('/api/v1/trips/9000')
+        .set('token', `Bearer ${admin.token}`);
+
+      assert.equal(res.status, 404, 'Should return 400 for non existent trip');
+      assert.hasAllKeys(res.body, ['status', 'message'], 'Response should have status and message keys');
+      assert.equal(res.body.status, 'error');
+    });
+  });
 });
