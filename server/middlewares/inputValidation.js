@@ -121,3 +121,31 @@ export const validateBus = async (req, res, next) => {
     });
   }
 };
+const tripSchema = Joi.object().keys({
+  origin: Joi.string().regex(/\w+/i).error(new Error('Invalid trip origin')),
+  destination: Joi.string().regex(/\w+/i).error(new Error('Invalid Trip destination')),
+  fare: Joi.number().integer().positive().error(new Error('Invalid Trip fare')),
+  bus_id: Joi.number().integer().positive().error(new Error('Invalid Bus Id')),
+  trip_date: Joi.string().error(new Error('Invalid Trip date')),
+});
+
+export const validateTrip = async (req, res, next) => {
+  const inputs = Object.keys(req.body);
+  for (let i = 0; i < inputs.length; i += 1) {
+    if (!req.body[inputs[i]]) {
+      return res.status(400).json({
+        status: 'error',
+        message: `${inputs[i]} is blank`,
+      });
+    }
+  }
+  try {
+    await Joi.validate(req.body, tripSchema);
+    return next();
+  } catch (error) {
+    return res.status(400).json({
+      status: 400,
+      message: error.mesage,
+    });
+  }
+};
