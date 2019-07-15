@@ -12,4 +12,5 @@ parserOptions:
 rules: {
   "camelcase": [0, {"properties", "always"}],
   "import/no-extraneous-dependencies": [0],
+  "import/prefer-default-export": "off"
 }
