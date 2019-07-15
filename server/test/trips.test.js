@@ -92,7 +92,7 @@ describe('trips', () => {
     });
 
     it('Should return 422 error if bus is already on another trip', async () => {
-      await Trip.createTrip(tripObj);
+      await Trip.create(tripObj);
       const tripObj2 = {
         origin: 'MaryLand',
         destination: 'Yaba',
@@ -105,7 +105,7 @@ describe('trips', () => {
         .post('/api/v1/trips')
         .set('token', `Bearer ${admin.token}`)
         .send(tripObj2);
-      assert.equal(res.status, 422, 'Should return 422 status code for non admin users');
+      assert.equal(res.status, 422, 'Should return 422 status code if bus is already on another trip');
       assert.hasAllKeys(res.body, ['status', 'message'], 'Response body should have error and message keys');
     });
 

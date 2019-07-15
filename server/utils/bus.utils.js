@@ -64,6 +64,25 @@ class Bus {
       throw new Error(error.message);
     }
   }
+
+  static async updateBusAvailability(bus) {
+    try {
+      const busSeats = Bus.generateSeats(bus.capacity);
+      const updateBusQuery = 'UPDATE buses SET available=$1, seats=$2 WHERE bus_id=$3 returning *';
+      try {
+        const updatedBus = await query(updateBusQuery, [
+          !bus.available,
+          busSeats,
+          bus.bus_id,
+        ]);
+        return updatedBus;
+      } catch (error) {
+        throw new Error('Could not update Bus');
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 export default Bus;
