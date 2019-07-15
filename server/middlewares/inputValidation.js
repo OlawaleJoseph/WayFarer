@@ -51,3 +51,35 @@ export const validateLogin = async (req, res, next) => {
     });
   }
 };
+
+const errorMessage = (path) => {
+  let msg = '';
+  if (/trip/.test(path)) {
+    msg = 'trip';
+  } else if (/bus/.test(path)) {
+    msg = 'bus';
+  } else if (/booking/.test(path)) {
+    msg = 'booking';
+  } else {
+    msg = 'user';
+  }
+  return msg;
+};
+
+export const validateParam = async (req, res, next) => {
+  const path = errorMessage(req.originalUrl);
+  if (!req.params[`${path}Id`]) {
+    return res.status(400).json({
+      status: 'error',
+      message: `${path} id not given`,
+    });
+  }
+
+  if (!parseInt(req.params[`${path}Id`], 10)) {
+    return res.status(400).json({
+      status: 'error',
+      message: `Invalid ${path} Id`,
+    });
+  }
+  return next();
+};

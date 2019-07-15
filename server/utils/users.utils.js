@@ -1,4 +1,4 @@
-import { hashPassword, generateToken } from './common';
+import { hashPassword, generateToken, verifyUser } from './common';
 import query from './query';
 
 class UsersUtils {
@@ -42,6 +42,16 @@ class UsersUtils {
       return users[0];
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  static async getUserById(user, id) {
+    verifyUser(user, id);
+    const queryText = 'SELECT * FROM users WHERE user_id = $1';
+    try {
+      return await query(queryText, [id]);
+    } catch (error) {
+      throw new Error(error.message);
     }
   }
 }

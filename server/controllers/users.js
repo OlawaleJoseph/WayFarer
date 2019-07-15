@@ -63,5 +63,35 @@ class User {
       });
     }
   }
+
+  static async findUser(req, res) {
+    try {
+      const foundUser = await helperFunctions.getUserById(req.user, req.params.userId);
+      if (!foundUser[0]) {
+        return res.status(404).json({
+          status: 'error',
+          message: 'User not found',
+        });
+      }
+      const {
+        user_id, first_name, last_name, email, is_admin,
+      } = foundUser[0];
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          user_id,
+          first_name,
+          last_name,
+          email,
+          is_admin,
+        },
+      });
+    } catch (error) {
+      return res.status(401).json({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
 }
 export default User;
