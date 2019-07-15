@@ -47,7 +47,7 @@ describe('Buses', () => {
       };
       const res = await chai.request(app)
         .post('/api/v1/buses')
-        .set('token', `Bearer ${admin.token}`)
+        .set('token', `Bearer ${`Bearer ${admin.token}`}`)
         .send(busData2);
       assert.equal(res.status, 201, 'Should respond with 201 status code');
       assert.equal(res.body.status, 'success', 'Json response status should be success');
@@ -65,7 +65,7 @@ describe('Buses', () => {
       };
       const res = await chai.request(app)
         .post('/api/v1/buses')
-        .set('token', `Bearer ${admin.token}`)
+        .set('token', `Bearer ${`Bearer ${admin.token}`}`)
         .send(busData);
       assert.equal(res.status, 409, 'Should respond with 409 status code');
       assert.equal(res.body.status, 'error', 'Json response status should be error');
@@ -82,7 +82,7 @@ describe('Buses', () => {
       };
       const res = await chai.request(app)
         .post('/api/v1/buses')
-        .set('token', `Bearer ${admin.token}`)
+        .set('token', `Bearer ${`Bearer ${admin.token}`}`)
         .send(busData3);
       assert.equal(res.status, 400, 'Should respond with 400 status code');
       assert.equal(res.body.status, 'error', 'Json response status should be error');
@@ -105,6 +105,42 @@ describe('Buses', () => {
       assert.equal(res.status, 400, 'Should respond with 400 status code');
       assert.equal(res.body.status, 'error', 'Json response status should be error');
       assert.hasAllKeys(res.body, ['status', 'message'], 'Error message should be present');
+    });
+  });
+  describe('Find A Bus', () => {
+    it('Should return a bus with the given id', async () => {
+      const res = await chai.request(app)
+        .get(`/api/v1/buses/${newBus.bus_id}`)
+        .set('token', `Bearer ${admin.token}`);
+      assert.equal(res.status, 200, 'Should return a status code of 200');
+      assert.hasAllKeys(res.body, ['status', 'data'], 'Response body should have status and data keys');
+      assert.isObject(res.body.data, 'Data should be an object');
+      assert.equal(res.body.data.bus_id, newBus.bus_id, 'The bus object returned should be the same as the specified bus id');
+    });
+
+
+    it('Should return an error with invalid bus id', async () => {
+      const res = await chai.request(app)
+        .get('/api/v1/buses/h')
+        .set('token', `Bearer ${admin.token}`);
+      assert.equal(res.status, 400, 'Should return a status code of 400');
+      assert.hasAllKeys(res.body, ['status', 'message'], 'Response body should have status and message keys');
+    });
+
+    it('Should return an error when the bus_id is not found', async () => {
+      const res = await chai.request(app)
+        .get('/api/v1/buses/1000')
+        .set('token', `Bearer ${admin.token}`);
+      assert.equal(res.status, 404, 'Should return a status code of 404');
+      assert.hasAllKeys(res.body, ['status', 'message'], 'Response body should have status and message keys');
+    });
+
+    it('Should return an error with invalid token', async () => {
+      const res = await chai.request(app)
+        .get('/api/v1/buses/g')
+        .set('token', 'token');
+      assert.equal(res.status, 400, 'Should return a status code of 400');
+      assert.hasAllKeys(res.body, ['status', 'message'], 'Response body should have status and message keys');
     });
   });
 });
