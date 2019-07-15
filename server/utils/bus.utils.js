@@ -43,6 +43,17 @@ class Bus {
       throw new Error('No Bus found');
     }
   }
+
+  static async findBusById(id) {
+    const findBusByIdQuery = 'SELECT * FROM buses WHERE bus_id = $1';
+    try {
+      const foundBus = await query(findBusByIdQuery, [id]);
+      if (!foundBus[0]) { throw new Error('Bus not found'); }
+      return foundBus[0];
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 export default Bus;

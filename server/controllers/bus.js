@@ -31,6 +31,23 @@ class Bus {
       });
     }
   }
+
+  static async findABus(req, res) {
+    try {
+      const bus = await helperFunction.findBusById(req.params.busId);
+
+      const { seats, ...busObj } = bus;
+      return res.status(200).json({
+        status: 'success',
+        data: busObj,
+      });
+    } catch (error) {
+      return res.status(404).json({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default Bus;
