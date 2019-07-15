@@ -126,4 +126,33 @@ describe('trips', () => {
       assert.hasAllKeys(res.body, ['status', 'message'], 'Response body should have error and message keys');
     });
   });
+  describe('Get A Trip', async () => {
+    it('Should get an trip with the given id', async () => {
+      const trip = await Trip.createTrip(tripObj);
+      const res = await chai.request(app)
+        .get(`/api/v1/trips/${trip.trip_id}`)
+        .set('token', user.token);
+      assert.equal(res.status, 200, 'Should return 200 for success');
+      assert.equal(trip.trip_id, res.body.data.trip_id, 'Trip id retrieved should match the one sent on success');
+      assert.hasAnyKeys(res.body.data, ['origin', 'destination', 'fare', 'trip_date', 'trip_id', 'bus_id']);
+    });
+
+    it('Should return a 400 error with an invalid trip id', async () => {
+      const res = await chai.request(app)
+        .get('/api/v1/trips/h')
+        .set('token', user.token);
+      assert.equal(res.status, 400, 'Should return 400 for invalid trip id');
+      assert.hasAllKeys(res.body, ['status', 'message'], 'response should have status and message keys');
+      assert.equal(res.body.status, 'error', 'Response status should be error for invalid trip id');
+    });
+
+    it('Should return a 404 error if trip does not exist', async () => {
+      const res = await chai.request(app)
+        .get('/api/v1/trips/900')
+        .set('token', user.token);
+      assert.equal(res.status, 404, 'Should return 404 if trip does not exist');
+      assert.hasAllKeys(res.body, ['status', 'message'], 'response should have status and message keys');
+      assert.equal(res.body.status, 'error', 'Response status should be error for non existent trip');
+    });
+  });
 });
