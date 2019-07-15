@@ -2,8 +2,10 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../index';
-import Users from '../utils/users';
+import Users from '../utils/users.utils';
 import query from '../utils/query';
+
+const { assert } = chai;
 
 chai.use(chaiHttp);
 
@@ -15,7 +17,7 @@ describe('Users', () => {
       last_name: 'James',
       email: 'mike@gmail.com',
       password: 'mypassword',
-      is_admin: false,
+      isAdmin: false,
     };
     user = await Users.createUser(userObj);
   });
@@ -38,7 +40,7 @@ describe('Users', () => {
       assert.equal(res.status, 201, 'Should return 201 for successful user registration');
       assert.equal(res.body.status, 'success');
       assert.isObject(res.body.data, 'Data should be an object');
-      assert.hasAllKeys(res.body.data, ['token', 'is_admin', 'id'], 'The reponse should include the user object and token generated');
+      assert.hasAllKeys(res.body.data, ['token', 'is_admin', 'user_id'], 'The reponse should include the user object and token generated');
     });
 
     it('Should Create admin users', async () => {
