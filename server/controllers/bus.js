@@ -48,6 +48,25 @@ class Bus {
       });
     }
   }
+
+  static async findAllBuses(req, res) {
+    try {
+      const buses = await helperFunction.findAllBuses();
+      const allBuses = buses.map((bus) => {
+        const { seats, ...busObj } = bus;
+        return busObj;
+      });
+      return res.status(200).json({
+        status: 'success',
+        data: allBuses,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 'error',
+        message: 'Internal server Error',
+      });
+    }
+  }
 }
 
 export default Bus;

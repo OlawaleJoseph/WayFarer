@@ -54,6 +54,16 @@ class Bus {
       throw new Error(error.message);
     }
   }
+
+  static async findAllBuses() {
+    const findAllBusesQuery = 'SELECT * FROM buses';
+    try {
+      const buses = await query(findAllBusesQuery);
+      return buses;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 export default Bus;
