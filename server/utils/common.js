@@ -17,3 +17,12 @@ export const generateToken = async (payload) => {
     throw new Error(error);
   }
 };
+export const verifyPassword = async (password, userPassword) => {
+  try {
+    const verifiedPassword = await bcrypt.compare(password, userPassword);
+    if (!verifiedPassword) return false;
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
