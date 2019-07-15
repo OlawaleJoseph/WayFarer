@@ -149,3 +149,18 @@ export const validateTrip = async (req, res, next) => {
     });
   }
 };
+const querySchema = Joi.object().keys({
+  origin: Joi.string().regex(/[a-z]+/i).error(new Error('Invalid Origin')),
+  destination: Joi.string().regex(/[a-z]+/i).error(new Error('Invalid destination')),
+});
+export const validateQuery = async (req, res, next) => {
+  try {
+    await Joi.validate(req.query, querySchema);
+    next();
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
+};
