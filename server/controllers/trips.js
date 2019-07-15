@@ -15,5 +15,19 @@ class Trips {
       });
     }
   }
+  static async findATrip(req, res) {
+    try {
+      const { trip_completed, ...foundTrip } = await tripHelperfunction.findTrip(req.params.tripId);
+      return res.status(200).json({
+        status: 'success',
+        data: foundTrip,
+      });
+    } catch (error) {
+      return res.status(404).json({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
 }
 export default Trips;

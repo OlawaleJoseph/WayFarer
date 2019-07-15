@@ -26,5 +26,15 @@ class Trips {
       throw new Error(error.message);
     }
   }
+  static async findTrip(id) {
+    const findOneTripQuery = 'SELECT * FROM trips WHERE trip_id = $1';
+    try {
+      const trip = await query(findOneTripQuery, [id]);
+      if (!trip[0]) { throw new Error('Trip not Found'); }
+      return trip[0];
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 export default Trips;
