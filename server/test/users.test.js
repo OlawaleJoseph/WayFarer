@@ -101,4 +101,89 @@ describe('Users', () => {
       );
     });
   });
+  describe('signin users', () => {
+    it('Should signin users', async () => {
+      const signinData = {
+        email: user.email,
+        password: 'mypassword',
+      };
+      const res = await chai
+        .request(app)
+        .post('/api/v1/auth/signin')
+        .send(signinData);
+      assert.equal(res.status, 200, 'Should return 200 status code');
+      assert.equal(
+        res.body.status,
+        'success',
+        'Response status should be success',
+      );
+      assert.hasAnyKeys(res.body.data, 'token', 'Should Generate Token');
+    });
+
+    it('Should return Error for unregistered email', async () => {
+      const wrongData = {
+        email: 'newemail@gmail.com',
+        password: user.password,
+      };
+      const res = await chai
+        .request(app)
+        .post('/api/v1/auth/signin')
+        .send(wrongData);
+      assert.equal(res.status, 404, 'Should return 404 status code');
+      assert.equal(
+        res.body.status,
+        'error',
+        'Response status should be error',
+      );
+      assert.hasAnyKeys(
+        res.body,
+        'message',
+        'Response should contain an error message',
+      );
+    });
+
+    it('Should return Error for wrong password', async () => {
+      const wrongData = {
+        email: user.email,
+        password: 'userpassword',
+      };
+      const res = await chai
+        .request(app)
+        .post('/api/v1/auth/signin')
+        .send(wrongData);
+      assert.equal(res.status, 400, 'Should return 400 status code');
+      assert.equal(
+        res.body.status,
+        'error',
+        'Response status should be error',
+      );
+      assert.hasAnyKeys(
+        res.body,
+        'message',
+        'Response should contain an error message',
+      );
+    });
+
+    it('Should return Error for missing fields', async () => {
+      const wrongData = {
+        email: user.email,
+        password: '',
+      };
+      const res = await chai
+        .request(app)
+        .post('/api/v1/auth/signin')
+        .send(wrongData);
+      assert.equal(res.status, 400, 'Should return 400 status code');
+      assert.equal(
+        res.body.status,
+        'error',
+        'Response status should be error',
+      );
+      assert.hasAnyKeys(
+        res.body,
+        'message',
+        'Response should contain an error message',
+      );
+    });
+  });
 });
