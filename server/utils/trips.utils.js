@@ -26,6 +26,7 @@ class Trips {
       throw new Error(error.message);
     }
   }
+
   static async findTrip(id) {
     const findOneTripQuery = 'SELECT * FROM trips WHERE trip_id = $1';
     try {

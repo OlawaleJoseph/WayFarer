@@ -15,6 +15,7 @@ class Trips {
       });
     }
   }
+
   static async findATrip(req, res) {
     try {
       const { trip_completed, ...foundTrip } = await tripHelperfunction.findTrip(req.params.tripId);
