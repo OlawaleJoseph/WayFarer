@@ -188,8 +188,8 @@ describe('trips', () => {
         .patch(`/api/v1/trips/${newTrip.trip_id}`)
         .set('token', `Bearer ${admin.token}`);
       assert.equal(res.status, 200, 'Success status should be 200');
-      assert.equal(res.body.data[0].status, 'cancelled', 'Trip status should be changed from active to cancelled');
-      assert.hasAnyKeys(res.body.data[0], ['trip_id', 'bus_id', 'trip_date'], 'The response object should conatin trip id, date, bus id');
+      assert.equal(res.body.data.status, 'cancelled', 'Trip status should be changed from active to cancelled');
+      assert.hasAnyKeys(res.body.data, ['trip_id', 'bus_id', 'trip_date'], 'The response object should conatin trip id, date, bus id');
     });
 
     it('Should return a 403 for a non admin user', async () => {
