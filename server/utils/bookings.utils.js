@@ -1,6 +1,8 @@
 import query from './query';
 import Trip from './trips.utils';
 import Bus from './bus.utils';
+import { verifyUser } from './common';
+
 
 class Bookings {
   static async createBooking(data, userId) {
@@ -64,6 +66,19 @@ class Bookings {
       return allBookings;
     } catch (error) {
       throw new Error('Internal Server Error');
+    }
+  }
+
+  static async deleteBooking(id, user) {
+    try {
+      const bookingToDelete = await Bookings.findABooking(id);
+      if (!bookingToDelete.booking_id) { return false; }
+      verifyUser(user, bookingToDelete.user_id);
+      const deleteBookingQuery = 'DELETE FROM bookings WHERE booking_id=$1';
+      await query(deleteBookingQuery, [id]);
+      return true;
+    } catch (error) {
+      throw new Error(error.message);
     }
   }
 }

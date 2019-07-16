@@ -78,6 +78,28 @@ class Bookings {
       });
     }
   }
+
+  static async deleteBooking(req, res) {
+    try {
+      const booking = await Helper.deleteBooking(req.params.bookingId, req.user);
+
+      if (!booking) {
+        return res.status(404).json({
+          status: 'error',
+          message: 'Booking not found',
+        });
+      }
+      return res.status(204).json({
+        status: 'success',
+        data: {},
+      });
+    } catch (error) {
+      return res.status(403).json({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default Bookings;

@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 
 const { assert } = chai;
 describe('Booking', () => {
-  let user1; let user2; let admin; let bus; let tripObj; let trip;
+  let user1; let user2; let bus; let tripObj; let trip;
   beforeEach(async () => {
     const user1Obj = {
       first_name: 'Dele',
@@ -159,7 +159,7 @@ describe('Booking', () => {
       const newBooking = await Booking.createBooking(booking, user1.user_id);
       const res = await chai.request(app)
         .get(`/api/v1/bookings/${newBooking.booking_id}`)
-        .set('token', `Bearer ${`Bearer ${user2.token}`}`);
+        .set('token', `Bearer ${user2.token}`);
       assert.equal(res.status, 403);
       assert.equal(res.body.status, 'error');
       assert.hasAllKeys(res.body, ['status', 'message']);
