@@ -121,4 +121,60 @@ describe('Booking', () => {
       assert.equal(res.body.status, 'error');
     });
   });
+  describe('Get A Booking', () => {
+    it('Should get the booking with the given booking id', async () => {
+      const booking = { trip_id: trip.trip_id, seat_number: 4 };
+      const newBooking = await Booking.createBooking(booking, user1.user_id);
+      const res = await chai.request(app)
+        .get(`/api/v1/bookings/${newBooking.booking_id}`)
+        .set('token', user1.token);
+
+      assert.equal(res.status, 200);
+      assert.equal(res.body.data.user_id, user1.user_id);
+      assert.equal(res.body.status, 'success');
+      assert.isObject(res.body.data);
+      assert.hasAnyKeys(res.body.data, ['booking_id', 'user_id', 'trip_id', 'trip_date', 'bus_id', 'first_name', 'last_name', 'email', 'seat_number']);
+    });
+
+    it('Should return an error for invalid booking id', async () => {
+      const res = await chai.request(app)
+        .get('/api/v1/bookings/k')
+        .set('token', user1.token);
+
+      assert.equal(res.status, 400);
+      assert.equal(res.body.status, 'error');
+      assert.hasAllKeys(res.body, ['status', 'message']);
+    });
+
+    it('Should return an error if no token is provided', async () => {
+      const booking = { trip_id: trip.trip_id, seat_number: 4 };
+      const newBooking = await Booking.createBooking(booking, user1.user_id);
+      const res = await chai.request(app)
+        .get(`/api/v1/bookings/${newBooking.booking_id}`);
+      assert.equal(res.status, 401);
+      assert.equal(res.body.status, 'error');
+      assert.hasAllKeys(res.body, ['status', 'message']);
+    });
+
+    it('Should return an error if user does not own the booking', async () => {
+      const booking = { trip_id: trip.trip_id, seat_number: 4 };
+      const newBooking = await Booking.createBooking(booking, user1.user_id);
+      const res = await chai.request(app)
+        .get(`/api/v1/bookings/${newBooking.booking_id}`)
+        .set('token', user2.token);
+      assert.equal(res.status, 403);
+      assert.equal(res.body.status, 'error');
+      assert.hasAllKeys(res.body, ['status', 'message']);
+    });
+
+    it('Should return an error for non existent booking', async () => {
+      await Booking.createBooking({ trip_id: trip.trip_id, seat_number: 9 }, user1.user_id);
+      const res = await chai.request(app)
+        .get('/api/v1/bookings/90000')
+        .set('token', user1.token);
+      assert.equal(res.status, 404);
+      assert.equal(res.body.status, 'error');
+      assert.hasAllKeys(res.body, ['status', 'message']);
+    });
+  });
 });
