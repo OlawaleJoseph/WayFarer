@@ -7,7 +7,11 @@ cache:
 services:
   - postgresql
 addons:
-  - postgresql: "11"
+  postgresql: "11"
+  apt:
+    packages:
+    - postgresql-10
+    - postgresql-client-10
 install:
   - npm install
 env:
