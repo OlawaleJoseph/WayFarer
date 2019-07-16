@@ -8,6 +8,6 @@ const router = express();
 
 router.post('/', [validateBooking, validateToken, validateBooking], Booking.createBooking);
 router.get('/:bookingId', [validateParam, validateToken], Booking.findABooking);
-
+router.get('/', validateToken, Booking.findAllBookings);
 
 export default router;

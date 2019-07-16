@@ -55,6 +55,29 @@ class Bookings {
       });
     }
   }
+
+  static async findAllBookings(req, res) {
+    try {
+      let allBookings = await Helper.findAllBookings(req.user);
+
+      allBookings = allBookings.map((booking) => {
+        const {
+          password, trip_completed, status, created_on, date_registered, is_admin, ...bookingObj
+        } = booking;
+        return bookingObj;
+      });
+
+      return res.status(200).json({
+        status: 'success',
+        data: allBookings,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default Bookings;
