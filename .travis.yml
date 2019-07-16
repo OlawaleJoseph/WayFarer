@@ -6,12 +6,6 @@ cache:
   - node_modules
 services:
   - postgresql
-addons:
-  postgresql: "11"
-  apt:
-    packages:
-    - postgresql-11
-    - postgresql-client-11
 install:
   - npm install
 env:
