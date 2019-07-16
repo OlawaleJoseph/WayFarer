@@ -175,4 +175,53 @@ describe('Booking', () => {
       assert.hasAllKeys(res.body, ['status', 'message']);
     });
   });
+  describe('Get All Bookings', () => {
+    it('Admin can get all booking in the database', async () => {
+      await Booking.createBooking({ trip_id: trip.trip_id, seat_number: 9 }, user1.user_id);
+      await Booking.createBooking({ trip_id: trip.trip_id, seat_number: 6 }, user2.user_id);
+      const res = await chai.request(app)
+        .get('/api/v1/bookings')
+        .set('token', `Bearer ${user1.token}`);
+
+      assert.equal(res.status, 200);
+      assert.equal(res.body.status, 'success');
+      assert.isArray(res.body.data);
+      assert.isNotEmpty(res.body.data);
+    });
+
+    it('User can only see bookings belonging to him/her', async () => {
+      await Booking.createBooking({ trip_id: trip.trip_id, seat_number: 9 }, user1.user_id);
+      const res = await chai.request(app)
+        .get('/api/v1/bookings')
+        .set('token', `Bearer ${user1.token}`);
+
+      assert.equal(res.status, 200);
+      assert.equal(res.body.status, 'success');
+      assert.isArray(res.body.data);
+      res.body.data.forEach((booking) => {
+        assert.equal(booking.user_id, user1.user_id);
+      });
+    });
+
+    it('Should return an error if no token is provided', async () => {
+      await Booking.createBooking({ trip_id: trip.trip_id, seat_number: 9 }, user1.user_id);
+      const res = await chai.request(app)
+        .get('/api/v1/bookings');
+
+      assert.equal(res.status, 401);
+      assert.equal(res.body.status, 'error');
+      assert.hasAllKeys(res.body, ['status', 'message']);
+    });
+
+    it('Should return an error for invalid', async () => {
+      await Booking.createBooking({ trip_id: trip.trip_id, seat_number: 9 }, user1.user_id);
+      const res = await chai.request(app)
+        .get('/api/v1/bookings')
+        .set('token', 'ghh76h');
+
+      assert.equal(res.status, 400);
+      assert.equal(res.body.status, 'error');
+      assert.hasAllKeys(res.body, ['status', 'message']);
+    });
+  });
 });
