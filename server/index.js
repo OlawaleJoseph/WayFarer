@@ -1,9 +1,11 @@
 import express from 'express';
 import debug from 'debug';
+import swaggerUI from 'swagger-ui-express';
 import userRouter from './routes/users';
 import busRouter from './routes/bus';
 import tripRouter from './routes/trips';
 import bookingRouter from './routes/bookings';
+import swaggerDoc from '../swagger.json';
 
 // initialize app
 const app = express();
@@ -12,8 +14,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Routes Middlewares
+app.get('/', (req, res) => {
+  res.send('Welcome to WayFarer');
+});
 
+// Routes Middlewares
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 app.use('/api/v1/auth', userRouter);
 app.use('/api/v1/buses', busRouter);
 app.use('/api/v1/trips', tripRouter);
