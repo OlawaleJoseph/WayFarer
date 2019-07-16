@@ -102,7 +102,7 @@ describe('Booking', () => {
     it('Should return an error if no token is provided', async () => {
       const res = await chai.request(app)
         .post('/api/v1/bookings')
-        .send();
+        .send({ trip_id: 1 });
       assert.equal(res.status, 401, '401 status code is expected');
       assert.equal(res.body.status, 'error');
     });
@@ -127,8 +127,7 @@ describe('Booking', () => {
       const newBooking = await Booking.createBooking(booking, user1.user_id);
       const res = await chai.request(app)
         .get(`/api/v1/bookings/${newBooking.booking_id}`)
-        .set('token', user1.token);
-
+        .set('token', `Bearer ${user1.token}`);
       assert.equal(res.status, 200);
       assert.equal(res.body.data.user_id, user1.user_id);
       assert.equal(res.body.status, 'success');
@@ -139,8 +138,7 @@ describe('Booking', () => {
     it('Should return an error for invalid booking id', async () => {
       const res = await chai.request(app)
         .get('/api/v1/bookings/k')
-        .set('token', user1.token);
-
+        .set('token', `Bearer ${user1.token}`);
       assert.equal(res.status, 400);
       assert.equal(res.body.status, 'error');
       assert.hasAllKeys(res.body, ['status', 'message']);
@@ -161,7 +159,7 @@ describe('Booking', () => {
       const newBooking = await Booking.createBooking(booking, user1.user_id);
       const res = await chai.request(app)
         .get(`/api/v1/bookings/${newBooking.booking_id}`)
-        .set('token', user2.token);
+        .set('token', `Bearer ${user2.token}`);
       assert.equal(res.status, 403);
       assert.equal(res.body.status, 'error');
       assert.hasAllKeys(res.body, ['status', 'message']);
@@ -171,7 +169,7 @@ describe('Booking', () => {
       await Booking.createBooking({ trip_id: trip.trip_id, seat_number: 9 }, user1.user_id);
       const res = await chai.request(app)
         .get('/api/v1/bookings/90000')
-        .set('token', user1.token);
+        .set('token', `Bearer ${user1.token}`);
       assert.equal(res.status, 404);
       assert.equal(res.body.status, 'error');
       assert.hasAllKeys(res.body, ['status', 'message']);

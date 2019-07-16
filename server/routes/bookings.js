@@ -1,12 +1,13 @@
 import express from 'express';
 import Booking from '../controllers/bookings';
-import { validateBooking } from '../middlewares/inputValidation';
+import { validateBooking, validateParam } from '../middlewares/inputValidation';
 import { validateToken } from '../middlewares/userVerification';
 
 const router = express();
 
 
-router.post('/', [validateToken, validateBooking], Booking.createBooking);
+router.post('/', [validateBooking, validateToken, validateBooking], Booking.createBooking);
+router.get('/:bookingId', [validateParam, validateToken], Booking.findABooking);
 
 
 export default router;
