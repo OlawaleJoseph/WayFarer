@@ -50,6 +50,22 @@ class Bookings {
       throw new Error(error.message);
     }
   }
+
+  static async findAllBookings(user) {
+    const findAllBookingsQuery = `SELECT * FROM bookings
+        INNER JOIN users ON bookings.user_id = users.user_id 
+        INNER JOIN trips ON trips.trip_id=bookings.trip_id`;
+
+    try {
+      const allBookings = await query(findAllBookingsQuery);
+      if (!user.isAdmin) {
+        return allBookings.filter(booking => booking.user_id === user.userId);
+      }
+      return allBookings;
+    } catch (error) {
+      throw new Error('Internal Server Error');
+    }
+  }
 }
 
 export default Bookings;
