@@ -251,19 +251,21 @@ describe('Booking', () => {
 
   describe('Update Seat Number', () => {
     it('User should be able to change seat number', async () => {
-      const bookingObj = { trip_id: trip.trip_id, seat_number: 4 };
+      const bookingObj = { trip_id: trip.trip_id, seat_number: 3 };
       const booking = await Booking.createBooking(bookingObj, user1.user_id);
       const res = await chai.request(app)
         .patch(`/api/v1/bookings/${booking.booking_id}`)
-        .set('token', `Bearer ${user1.token}`);
-      assert.notEqual(res.body.seat_numer, booking.seat_number);
+        .set('token', `Bearer ${user1.token}`)
+        .send({ seat_number: 8 });
+      assert.notEqual(res.body.data.seat_number, booking.seat_number);
+      assert.isNumber(res.body.data.seat_number, 'Updatedseat number should be an integer');
     });
     it('Should return an error if no token is provided', async () => {
       const bookingObj = { trip_id: trip.trip_id, seat_number: 9 };
       const booking = await Booking.createBooking(bookingObj, user1.user_id);
       const res = await chai.request(app)
-        .patch(`/api/v1/bookings/${booking.booking_id}`);
-
+        .patch(`/api/v1/bookings/${booking.booking_id}`)
+        .send({ seat_number: 7 });
       assert.equal(res.status, 401);
       assert.equal(res.body.status, 'error');
       assert.hasAllKeys(res.body, ['status', 'message']);
@@ -273,8 +275,8 @@ describe('Booking', () => {
       const booking = await Booking.createBooking(bookingObj, user1.user_id);
       const res = await chai.request(app)
         .patch(`/api/v1/bookings/${booking.booking_id}`)
-        .set('token', `Bearer ${user2.token}`);
-
+        .set('token', `Bearer ${user2.token}`)
+        .send({ seat_number: 9 });
       assert.equal(res.status, 403);
       assert.equal(res.body.status, 'error');
       assert.hasAllKeys(res.body, ['status', 'message']);

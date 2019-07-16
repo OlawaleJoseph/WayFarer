@@ -100,6 +100,44 @@ class Bookings {
       });
     }
   }
+
+  static async updateSeat(req, res) {
+    if (!parseInt(req.body.seat_number, 10)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid Booking Number',
+      });
+    }
+    const bookingToUpdate = await Helper.findABooking(req.params.bookingId);
+    if (!bookingToUpdate.booking_id) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Booking not found',
+      });
+    }
+    const oldSeat = bookingToUpdate.seat_number;
+    if (oldSeat === parseInt(req.body.seatNumber, 10)) {
+      return res.status(422).json({
+        status: 'error',
+        message: 'You have already booked this seat',
+      });
+    }
+    try {
+      verifyUser(req.user, bookingToUpdate.user_id);
+      const busId = bookingToUpdate.bus_id;
+      await Helper.changeSeat(busId, oldSeat, req.body.seatNumber, bookingToUpdate.booking_id);
+      const updatedBooking = await Helper.findABooking(req.params.bookingId);
+      return res.status(200).json({
+        status: 'success',
+        data: updatedBooking,
+      });
+    } catch (error) {
+      return res.status(403).json({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default Bookings;
