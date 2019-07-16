@@ -64,5 +64,26 @@ class Trips {
     destination = destination.toUpperCase();
     return data.filter(item => item.destination === destination);
   }
+
+  static async updateTripStatus(id) {
+    try {
+      const trip = await Trips.findTrip(id);
+      if (!trip) {
+        throw new Error('Trip not found');
+      } else {
+        const newStatus = trip.status === 'active' ? 'cancelled' : 'active';
+        const updateTripQuery = 'UPDATE trips SET status=$1 WHERE trip_id=$2 returning *';
+        try {
+          const updatedTrip = await query(updateTripQuery, [newStatus, id]);
+          await Bus.updateBusAvailability(updatedTrip[0].bus_id);
+          return updatedTrip[0];
+        } catch (error) {
+          throw new Error('Could not update trip');
+        }
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 export default Trips;

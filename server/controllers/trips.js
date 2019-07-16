@@ -54,5 +54,20 @@ class Trips {
       });
     }
   }
+
+  static async updateTripStatus(req, res) {
+    try {
+      const updatedtrip = await tripHelperfunction.updateTripStatus(req.params.tripId);
+      return res.status(200).json({
+        status: 'success',
+        data: updatedtrip,
+      });
+    } catch (error) {
+      return res.status(404).json({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
 }
 export default Trips;
