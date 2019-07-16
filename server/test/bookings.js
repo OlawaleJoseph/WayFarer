@@ -28,13 +28,6 @@ describe('Booking', () => {
       password: 'password',
       isAdmin: false,
     };
-    const adminObj = {
-      first_name: 'Wale',
-      last_name: 'Deko',
-      email: 'waledeko@wayfarer.com',
-      password: 'password123',
-      isAdmin: true,
-    };
     const busObj = {
       manufacturer: 'Toyota',
       year: 2016,
@@ -44,7 +37,6 @@ describe('Booking', () => {
     };
     user1 = await User.createUser(user1Obj);
     user2 = await User.createUser(user2Obj);
-    admin = await User.createUser(adminObj);
     bus = await Bus.createBus(busObj);
     tripObj = {
       origin: 'Lekki',
@@ -249,6 +241,38 @@ describe('Booking', () => {
       const booking = await Booking.createBooking(bookingObj, user1.user_id);
       const res = await chai.request(app)
         .delete(`/api/v1/bookings/${booking.booking_id}`)
+        .set('token', `Bearer ${user2.token}`);
+
+      assert.equal(res.status, 403);
+      assert.equal(res.body.status, 'error');
+      assert.hasAllKeys(res.body, ['status', 'message']);
+    });
+  });
+
+  describe('Update Seat Number', () => {
+    it('User should be able to change seat number', async () => {
+      const bookingObj = { trip_id: trip.trip_id, seat_number: 4 };
+      const booking = await Booking.createBooking(bookingObj, user1.user_id);
+      const res = await chai.request(app)
+        .patch(`/api/v1/bookings/${booking.booking_id}`)
+        .set('token', `Bearer ${user1.token}`);
+      assert.notEqual(res.body.seat_numer, booking.seat_number);
+    });
+    it('Should return an error if no token is provided', async () => {
+      const bookingObj = { trip_id: trip.trip_id, seat_number: 9 };
+      const booking = await Booking.createBooking(bookingObj, user1.user_id);
+      const res = await chai.request(app)
+        .patch(`/api/v1/bookings/${booking.booking_id}`);
+
+      assert.equal(res.status, 401);
+      assert.equal(res.body.status, 'error');
+      assert.hasAllKeys(res.body, ['status', 'message']);
+    });
+    it('Should return an error if the booking doesnt belong to the user', async () => {
+      const bookingObj = { trip_id: trip.trip_id, seat_number: 9 };
+      const booking = await Booking.createBooking(bookingObj, user1.user_id);
+      const res = await chai.request(app)
+        .patch(`/api/v1/bookings/${booking.booking_id}`)
         .set('token', `Bearer ${user2.token}`);
 
       assert.equal(res.status, 403);
