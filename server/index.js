@@ -3,6 +3,7 @@ import debug from 'debug';
 import userRouter from './routes/users';
 import busRouter from './routes/bus';
 import tripRouter from './routes/trips';
+import bookingRouter from './routes/bookings';
 
 // initialize app
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/v1/auth', userRouter);
 app.use('/api/v1/buses', busRouter);
 app.use('/api/v1/trips', tripRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 
 const port = 3000;

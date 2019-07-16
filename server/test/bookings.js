@@ -53,7 +53,7 @@ describe('Booking', () => {
       trip_date: '12/07/2019 15:30:00',
       bus_id: bus.bus_id,
     };
-    trip = await Trip.createTrip(tripObj);
+    trip = await Trip.create(tripObj);
   });
 
   afterEach(async () => {
