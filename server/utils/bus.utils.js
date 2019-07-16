@@ -83,6 +83,32 @@ class Bus {
       throw new Error(error.message);
     }
   }
+
+  static async pickSeat(bus_id, seatNumber) {
+    const updateQuery = 'UPDATE buses SET seats=$1 WHERE bus_id=$2 returning *';
+    let index;
+    try {
+      const boardingBus = await Bus.findBusById(bus_id);
+      if (boardingBus.seats.length < 1) {
+        throw new Error('All seats are filled');
+      }
+      if (seatNumber) {
+        seatNumber = parseInt(seatNumber, 10);
+        if (!boardingBus.seats.includes(seatNumber)) {
+          throw new Error('Seat not available. Choose another seat');
+        } else {
+          index = boardingBus.seats.indexOf(seatNumber);
+          boardingBus.seats.splice(index, 1);
+        }
+      } else {
+        seatNumber = boardingBus.seats.shift();
+      }
+      await query(updateQuery, [boardingBus.seats, bus_id]);
+      return seatNumber;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 export default Bus;

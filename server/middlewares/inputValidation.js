@@ -164,3 +164,29 @@ export const validateQuery = async (req, res, next) => {
     });
   }
 };
+const bookingSchema = Joi.object().keys({
+  trip_id: Joi.number()
+    .integer()
+    .positive()
+    .required()
+    .error(new Error('Invalid Trip Id')),
+  seat_number: Joi.number()
+    .integer()
+    .positive()
+    .allow('')
+    .error(new Error('Invalid seat number')),
+});
+export const validateBooking = async (req, res, next) => {
+  try {
+    if (!req.body.trip_id) {
+      throw new Error('No Trip Id given');
+    }
+    await Joi.validate(req.body, bookingSchema);
+    next();
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
+};
