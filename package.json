@@ -7,6 +7,7 @@
     "build": "npm run clean && babel ./server -d ./build",
     "clean": "rm -rf ./build && mkdir build",
     "dev": "set DEBUG=http && babel-node ./server index",
+    "start": "node ./build/index.js",
     "lint": "./node_modules/.bin/eslint ./server --fix",
     "test": "cross-env NODE_ENV=test && npm run resetDb && nyc --require @babel/register --require @babel/polyfill mocha  ./server/test/*.js --timeout 20000 --exit",
     "generate-lcov": "nyc report --reporter=text-lcov > lcov-info",
