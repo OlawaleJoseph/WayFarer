@@ -10,7 +10,7 @@ install:
   - npm install
 env:
   global:
-  - PGPORT=5432
+  - PGPORT=5433
   - NODE_ENV=test
 
 before_script:
