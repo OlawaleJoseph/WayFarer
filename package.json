@@ -4,12 +4,19 @@
   "description": "WayFarer is a public bus transportation booking server.",
   "main": "index.js",
   "scripts": {
+    "build": "npm run clean && babel ./server -d ./build",
+    "clean": "rm -rf ./build && mkdir build",
     "dev": "set DEBUG=http && babel-node ./server index",
     "lint": "./node_modules/.bin/eslint ./server --fix",
-    "test": "mocha --require @babel/register --require @babel/polyfill ./server/test/*.js --timeout 20000 --exit",
+    "test": "SET NODE_ENV=test && npm run resetDb && nyc --require @babel/register --require @babel/polyfill mocha  ./server/test/*.js --timeout 20000 --exit",
+    "generate-lcov": "nyc report --reporter=text-lcov > lcov-info",
+    "coveralls-coverage": "coveralls < lcov-info",
+    "codeclimate-coverage": "codeclimate-test-reporter < lcov-info",
+    "coverage": "npm run test && npm run generate-lcov && npm run coveralls-coverage && npm run codeclimate-coverage",
     "migrations": "babel-node ./server/models/migrations resetTables",
     "seeder": "babel-node ./server/models/seeder seedDb",
-    "devStart": "npm run migrations && npm run seeder && npm run dev"
+    "devStart": "npm run resetDb && npm run dev",
+    "resetDb":"npm run migrations && npm run seeder"
   },
   "repository": {
     "type": "git",
@@ -49,10 +56,13 @@
     "@babel/preset-env": "^7.5.4",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "codeclimate-test-reporter": "^0.5.1",
+    "coveralls": "^3.0.5",
     "eslint": "^6.0.1",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.18.0",
     "mocha": "^6.1.4",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "nyc": "^14.1.1"
   }
 }

@@ -1,0 +1,31 @@
+language: node_js
+node_js:
+- stable
+cache:
+  directories:
+  - node_modules
+services:
+  - postgresql
+install:
+  - npm install
+env:
+  global:
+  - PGPORT=5432
+  - NODE_ENV=test
+  - secure: qqpjJJmoo1qhY96gtnVTuFjnOTz5ddrB2Lrua8r8CToDQPjvbW/BDxZtledmmxkeH28Q7BrAcEWnBXii9mkhhCrygkSwONBeGHDsbAZZ46yir6qQDFfxvILLEiuf0Msjy9OYAGrIjefHw9jo0tNhTa0F+66mOToyH1zxbtfDBFwjh+3RCxaddSyWzMouDg2j2EId2l3LHZTxg/kRwFn2HjCIDu1YAZxuManzjtKipxE0NG4YGFiEBTucbaH9nMCTI7R0x5MY7an6ML1Y+xu/Pzt+odlJxVt5c5j4yyoR9nm1cGn4MT0dawFayQAB9tQtgWDlfaWoMBEFXl+khJZ7fd7ayjXeH8Znmi8oMYZ/ONOTTXd/sHLfeNqxnNY62dGvG0y/XZFhjnBym+iLb6S0qgPN8QKY0op31gZ64hRhq15NImkaauxAsHZIlbhfFnbgPsNLMXqGXR9jptqiYLKDRtv4Z4Mwoh6Z5VoazE8BWeM6rvZZSTLowOJ1ckWiaUaIqkmXl848F3MWmoKbd9Z6tmj9QLAmFpcSqcRWEZkCMTQECCfhBOrXGysQQ5fsowt6NGDz4YLMPJXscdN7dYHH4IqclHRGdE+Ge3Lrey8R+XpbH+oh/dkSw2BM4GScHL174PtcI1Z9z+PkAbvOc6AWrb9R56JLl8kYTa2BOYL17AM=
+
+addons:
+  code_climate:
+    repo_token:
+      secure: MLXm2Ft7Eg7mZI0EzDWbYZgjkOIIdrtTyVAUm6QtNwph4AgMNQLAUmE117bU2Fq6mlPuJK3x5aKelfDIdP2QlTei5pNrtHZVONWUuUKwxP8C5vMdvnbYocgCOnYm7QXEyDYIwhFHFFfsqT07enS6y4gcrj97L3cfGGuFx29xzKXUUYTcXphC5XFAnFLlxS/chFnMMbyr/SpzfsEHm5iOMGgGmAds/w0mK3DgHgDn8xtO8lZqYegp3tfdgQtN3aWrYrtn4RZgx5aUcdcb1vv42rvejULmRcfGacehGuZmOwLCrtEqFqa8+V0+ChwKcykI8qPWczY9du69AH001haIQSpdmaudZs8ggM+Ju5sw3ERPBCoHYog3cfAWYGNX7/aDAAQ1hPc8DEa0nDHd/x/D1hLERYNVK8K56x2UfQcJQzze+IKPdgLQUfFIm+3hR/XFH1Kdg1x43N0tvfXT7g4Qm6b04/qB1oEtE0a/brzjD8IBWEOrfOys9BuDzyHDgaA5SOpen3dEHphFYrEzs728MZ/+LnY4LauZbWmEPgz+utvGWwE698ZcUWXst/8/tsIRWdhPvG/S22Au3WAUxLCHdvUAnb9RFmX0LatA07AEM4SbjFNUQNp35qosfIm04i61Zc/CsWP4SwWMYOFNTpfUH1i7xUlFUQ/yAzAenYwxMUU=
+
+before_script:
+  - psql -c 'create database bus_test;' -U postgres
+  - npm run build
+script:
+  - npm run test
+after_script:
+  - npm run coverage
+
+notifications:
+  - email: false
