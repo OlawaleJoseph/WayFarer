@@ -8,10 +8,6 @@ services:
   - postgresql
 addons:
   - postgresql: 11
-postgres:
-  adapter: postgresql
-  database: myapp_test
-  username: postgres
 install:
   - npm install
 env:
