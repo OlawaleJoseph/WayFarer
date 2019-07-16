@@ -159,7 +159,7 @@ describe('Booking', () => {
       const newBooking = await Booking.createBooking(booking, user1.user_id);
       const res = await chai.request(app)
         .get(`/api/v1/bookings/${newBooking.booking_id}`)
-        .set('token', `Bearer ${user2.token}`);
+        .set('token', `Bearer ${`Bearer ${user2.token}`}`);
       assert.equal(res.status, 403);
       assert.equal(res.body.status, 'error');
       assert.hasAllKeys(res.body, ['status', 'message']);
@@ -220,6 +220,38 @@ describe('Booking', () => {
         .set('token', 'ghh76h');
 
       assert.equal(res.status, 400);
+      assert.equal(res.body.status, 'error');
+      assert.hasAllKeys(res.body, ['status', 'message']);
+    });
+  });
+  describe('Delete Booking', () => {
+    it('User should be able to delete his/her booking', async () => {
+      const bookingObj = { trip_id: trip.trip_id, seat_number: 9 };
+      const booking = await Booking.createBooking(bookingObj, user1.user_id);
+      const res = await chai.request(app)
+        .delete(`/api/v1/bookings/${booking.booking_id}`)
+        .set('token', `Bearer ${user1.token}`);
+      assert.equal(res.status, 204);
+      assert.isUndefined(res.body.data);
+    });
+    it('Should return an error if no token is provided', async () => {
+      const bookingObj = { trip_id: trip.trip_id, seat_number: 9 };
+      const booking = await Booking.createBooking(bookingObj, user1.user_id);
+      const res = await chai.request(app)
+        .delete(`/api/v1/bookings/${booking.booking_id}`);
+
+      assert.equal(res.status, 401);
+      assert.equal(res.body.status, 'error');
+      assert.hasAllKeys(res.body, ['status', 'message']);
+    });
+    it('Should return an error if the booking doesnt belong to the user', async () => {
+      const bookingObj = { trip_id: trip.trip_id, seat_number: 9 };
+      const booking = await Booking.createBooking(bookingObj, user1.user_id);
+      const res = await chai.request(app)
+        .delete(`/api/v1/bookings/${booking.booking_id}`)
+        .set('token', `Bearer ${user2.token}`);
+
+      assert.equal(res.status, 403);
       assert.equal(res.body.status, 'error');
       assert.hasAllKeys(res.body, ['status', 'message']);
     });
