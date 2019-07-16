@@ -109,6 +109,20 @@ class Bus {
       throw new Error(error.message);
     }
   }
+
+  static async changeBusSeat(id, newSeat, OldSeat) {
+    try {
+      const currentSeat = await Bus.pickSeat(id, newSeat);
+      const busToUpdateSeat = await Bus.findBusById(id);
+      const newSeats = busToUpdateSeat.seats.slice();
+      newSeats.push(OldSeat);
+      const updateSeatQuery = 'UPDATE buses SET seats=$2 WHERE bus_id=$1';
+      await query(updateSeatQuery, [id, newSeats]);
+      return currentSeat;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default Bus;

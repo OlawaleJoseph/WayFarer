@@ -81,6 +81,20 @@ class Bookings {
       throw new Error(error.message);
     }
   }
+
+  static async changeSeat(busId, oldSeat, newSeat, bookingId) {
+    try {
+      const updatedBookingSeat = await Bus.changeBusSeat(
+        busId,
+        newSeat,
+        oldSeat,
+      );
+      const updateSeatQuery = 'UPDATE bookings SET seat_number=$1 WHERE booking_id=$2 returning *';
+      return await query(updateSeatQuery, [updatedBookingSeat, bookingId]);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default Bookings;
