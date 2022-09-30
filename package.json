@@ -39,7 +39,7 @@
   "dependencies": {
     "@babel/register": "^7.4.4",
     "@babel/runtime": "^7.5.4",
-    "@hapi/joi": "^15.1.0",
+    "@hapi/joi": "^15.1.1",
     "bcryptjs": "^2.4.3",
     "cross-env": "^5.2.0",
     "debug": "^4.1.1",
